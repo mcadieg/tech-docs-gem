@@ -48,3 +48,4 @@ api_path: source/pets.yml
 # Optional global settings for the page review process
 owner_slack_workspace: gds
 default_owner_slack: '#2nd-line'
+show_expiry: false

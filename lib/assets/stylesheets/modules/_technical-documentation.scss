@@ -1,18 +1,14 @@
 // Adds combination of margin and padding to headings to make them appear
 // correctly when they're linked to as anchors, and scale them on mobile
+// TODO: Headings are hidden underneath the sticky 'table of contents' on mobile
+// when following a link to them
+
 @mixin heading-offset($tabletTopMargin) {
   // Scale margins with font size on mobile (16/19ths)
   $mobileTopMargin: ceil($tabletTopMargin * (16 / 19));
-  
-  // Offset headings down on mobile so that linking to anchors they appear after
-  // the sticky 'table of contents' element
-  $stickyTocOffset: 20px + $gutter-half + 10px + 1px;
-  
-  // Pad the heading so that when linking to an anchor there is at most a
-  // $gutter-half (mobile) or $gutter (tablet and above) sized gap between the
-  // top of the viewport and the heading.
-  padding-top: min($mobileTopMargin, $gutter-half) + $stickyTocOffset;
-  margin-top: max(0, $mobileTopMargin - $gutter-half) - $stickyTocOffset;
+
+  padding-top: min($mobileTopMargin, $gutter-half);
+  margin-top: max(0, $mobileTopMargin - $gutter-half);
 
   @include media(tablet) {
     padding-top: min($tabletTopMargin, $gutter);
@@ -25,9 +21,9 @@
   display: block;
   margin: 0 $gutter-half 10px;
   max-width: 40em;
-  
+
   line-height: 1.4;
-  
+
   color: $text-colour;
 
   @include media(tablet) {
@@ -45,14 +41,14 @@
     @include bold-48;
     @include heading-offset($gutter * 2);
     border-top: 5px solid $text-colour;
-    
+
     &:first-of-type {
       @include heading-offset($gutter);
       border-top: none;
     }
   }
 
-  h2 {    
+  h2 {
     @include bold-36;
     @include heading-offset($gutter * 1.5);
   }
@@ -125,7 +121,7 @@
 
   ol + p, ul + p, .table-container + p {
     margin-top: ceil($gutter * (16 / 19));
-    
+
     @include media(tablet) {
       margin-top: $gutter;
     }
@@ -144,6 +140,11 @@
     overflow: auto;
     position: relative;
     border: 1px solid $code-02;
+    // Restrict the width of pre tags, as they have a tendency grow larger than
+    // the viewport when placed within table cells.
+    // @todo: Use table-layout: fixed, and remove the max-width definition from
+    // .technical-documentation so tables can fill the viewport.
+    max-width: 40em;
   }
 
   pre code {
@@ -156,11 +157,11 @@
     background: $code-01;
     padding: 3px 5px;
     border-radius: 1px;
-    
+
     font-family: monaco, Consolas, "Lucida Console", monospace;
     font-size: 15px;
     color: $code-0E;
-    
+
     @include media(tablet) {
       font-size: 16px;
     }
@@ -191,11 +192,11 @@
     display: block;
     max-width: 100%;
     overflow-x: auto;
-    
+
     margin-top: $gutter-half;
   }
 
-  table {    
+  table {
     width: 100%;
 
     border-collapse: collapse;

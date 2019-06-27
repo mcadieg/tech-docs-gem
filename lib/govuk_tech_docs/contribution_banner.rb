@@ -19,11 +19,21 @@ module GovukTechDocs
     end
 
     def report_issue_url
-      "#{repo_url}/issues/new?labels=bug&title=Re: '#{current_page.data.title}'&body=Problem with '#{current_page.data.title}' (#{config[:tech_docs][:host]}#{current_page.url})"
+      url = config[:source_urls]&.[](:report_issue_url)
+
+      if url.nil?
+        "#{repo_url}/issues/new?labels=bug&title=Re: '#{current_page.data.title}'&body=Problem with '#{current_page.data.title}' (#{config[:tech_docs][:host]}#{current_page.url})"
+      else
+        "#{url}?subject=Re: '#{current_page.data.title}'&body=Problem with '#{current_page.data.title}' (#{config[:tech_docs][:host]}#{current_page.url})"
+      end
     end
 
     def repo_url
       "https://github.com/#{config[:tech_docs][:github_repo]}"
+    end
+
+    def repo_branch
+      config[:tech_docs][:github_branch] || 'master'
     end
 
   private
@@ -42,7 +52,7 @@ module GovukTechDocs
 
     # As the last fallback link to the source file in this repository.
     def source_from_file
-      "#{repo_url}/blob/master/source/#{current_page.file_descriptor[:relative_path]}"
+      "#{repo_url}/blob/#{repo_branch}/source/#{current_page.file_descriptor[:relative_path]}"
     end
 
     def locals

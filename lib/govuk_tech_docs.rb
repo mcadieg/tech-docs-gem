@@ -20,7 +20,8 @@ require 'govuk_tech_docs/pages'
 require 'govuk_tech_docs/tech_docs_html_renderer'
 require 'govuk_tech_docs/unique_identifier_extension'
 require 'govuk_tech_docs/unique_identifier_generator'
-require 'govuk_tech_docs/api_reference/api_reference'
+require 'govuk_tech_docs/warning_text_extension'
+require 'govuk_tech_docs/api_reference/api_reference_extension'
 
 module GovukTechDocs
   # Configure the tech docs template
@@ -29,7 +30,6 @@ module GovukTechDocs
   # @option options [Hash] livereload Options to pass to the `livereload`
   #   extension. Hash with symbols as keys.
   def self.configure(context, options = {})
-    context.activate :autoprefixer
     context.activate :sprockets
     context.activate :syntax
 
@@ -52,13 +52,15 @@ module GovukTechDocs
     end
 
     context.configure :build do
-      activate :minify_css
-      activate :minify_javascript
+      activate :autoprefixer
+      activate :minify_css, ignore: ['/raw_assets/*']
+      activate :minify_javascript, ignore: ['/raw_assets/*']
     end
 
-    context.config[:tech_docs] = YAML.load_file('config/tech-docs.yml').with_indifferent_access
+    config_file = ENV.fetch('CONFIG_FILE', 'config/tech-docs.yml')
+    context.config[:tech_docs] = YAML.load_file(config_file).with_indifferent_access
     context.activate :unique_identifier
-
+    context.activate :warning_text
     context.activate :api_reference
 
     context.helpers do
@@ -70,7 +72,7 @@ module GovukTechDocs
       end
 
       def current_page_review
-        @current_page_review ||= GovukTechDocs::PageReview.new(current_page)
+        @current_page_review ||= GovukTechDocs::PageReview.new(current_page, config)
       end
 
       def format_date(date)

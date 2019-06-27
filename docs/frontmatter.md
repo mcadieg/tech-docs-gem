@@ -5,23 +5,11 @@
 ## `last_reviewed_on` and `review_in`
 
 These attributes determine the date when the page needs to be reviewed next.
+See the separate [documentation for page expiry][expiry] for more details.
 
-If the page doesn't need to be reviewed, we show a blue box with the last-reviewed date, when it needs review again, and the owner.
-
-![](not-expired-page.png)
-
-If the page needs to be reviewed, we show a red box saying the page might not be accurate.
-
-![](expired-page.png)
+[expiry]: https://tdt-documentation.london.cloudapps.digital/page-expiry.html#page-expiry-and-review
 
 Example:
-
-```yaml
----
-last_reviewed_on: 2018-01-18
-review_in: 6 weeks
----
-```
 
 You can use this in combination with [owner_slack](#owner-slack) to set an owner for the page.
 
@@ -77,6 +65,18 @@ This page has a configurable sidebar that is independent of the content.
 
 ![](core-layout.png)
 
+If you do not specify a sidebar, you will get a simple one-column layout without one.
+
+```rb
+---
+layout: core
+---
+
+This page does not have a sidebar.
+```
+
+![](core-layout-without-sidebar.png)
+
 ## `old_paths`
 
 Any paths of pages that should redirect to this page.
@@ -98,6 +98,17 @@ The Slack username or channel of the page owner. This can be used to appoint an 
 ---
 owner_slack: "#operations-teams"
 ---
+```
+
+## `source_url`
+
+If the contribution banner is turned on, you can override the "View source" link
+using `source_url`.
+
+Example:
+
+```yaml
+source_url: http://example.org/source.md
 ```
 
 ## `title`
